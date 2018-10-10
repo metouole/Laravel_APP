@@ -18,15 +18,16 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Type</th>
+                    <th>Type </th>
+                    <th>Created At</th>
                     <th>Actions</th>
                   </tr>
                   <tr v-for="user in users" :key= "user.id" >
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.type }}</td>
-                    
+                    <td>{{ user.type | upText }}</td>
+                    <td>{{ user.created_at | myDate }}</td>
                     <td>
                         <a href="#">
                             <i class="fas fa-user-edit blue"></i>
