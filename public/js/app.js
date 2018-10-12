@@ -30424,6 +30424,8 @@ window.toast = toast;
 
 window.Form = __WEBPACK_IMPORTED_MODULE_0_vform__["Form"];
 
+window.Fire = new Vue();
+
 Vue.component(__WEBPACK_IMPORTED_MODULE_0_vform__["HasError"].name, __WEBPACK_IMPORTED_MODULE_0_vform__["HasError"]);
 Vue.component(__WEBPACK_IMPORTED_MODULE_0_vform__["AlertError"].name, __WEBPACK_IMPORTED_MODULE_0_vform__["AlertError"]);
 
@@ -71664,46 +71666,76 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            users: {},
-            form: new Form({
-                name: '',
-                email: '',
-                password: '',
-                type: '',
-                bio: '',
-                photo: ''
-            })
-        };
-    },
+  data: function data() {
+    return {
+      users: {},
+      form: new Form({
+        name: '',
+        email: '',
+        password: '',
+        type: '',
+        bio: '',
+        photo: ''
+      })
+    };
+  },
 
 
-    methods: {
-        loadUsers: function loadUsers() {
-            var _this = this;
+  methods: {
+    deleteUser: function deleteUser(id) {
+      var _this = this;
 
-            axios.get('api/user').then(function (_ref) {
-                var data = _ref.data;
-                return _this.users = data.data;
-            });
-        },
-        createUser: function createUser() {
-            this.$Progress.start();
-            this.form.post('api/user');
-            $('#addnew').modal('hide');
-            toast({
-                type: 'success',
-                title: 'User Created successfully'
-            });
-            this.$Progress.finish();
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+
+        if (result.value) {
+          //Send request to the server
+          _this.form.delete('api/user/' + id).then(function () {
+            swal('Deleted!', 'Your file has been deleted.', 'success');
+            Fire.$emit('AfterCreate');
+          }).catch(function () {
+            swal('Failed!', 'There was something wrong', 'warning');
+          });
         }
+      });
     },
+    loadUsers: function loadUsers() {
+      var _this2 = this;
 
-    created: function created() {
-        this.loadUsers();
-        setInterval(this.loadUsers, 3000);
+      axios.get('api/user').then(function (_ref) {
+        var data = _ref.data;
+        return _this2.users = data.data;
+      });
+    },
+    createUser: function createUser() {
+      this.$Progress.start();
+      this.form.post('api/user').then(function () {
+        Fire.$emit('AfterCreate');
+
+        $('#addnew').modal('hide');
+        toast({
+          type: 'success',
+          title: 'User Created successfully'
+        });
+        this.$Progress.finish();
+      }).catch(function () {
+        this.$Progress.fail();
+      });
     }
+  },
+
+  created: function created() {
+    this.loadUsers();
+    Fire.$on('AfterCreate', this.loadUsers);
+    //setInterval(this.loadUsers, 3000);
+  }
 });
 
 /***/ }),
@@ -71741,7 +71773,22 @@ var render = function() {
                         _vm._v(_vm._s(_vm._f("myDate")(user.created_at)))
                       ]),
                       _vm._v(" "),
-                      _vm._m(2, true)
+                      _c("td", [
+                        _vm._m(2, true),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                _vm.deleteUser(user.id)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash-alt red" })]
+                        )
+                      ])
                     ])
                   })
                 ],
@@ -72074,14 +72121,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fas fa-user-edit blue" })
-      ]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fas fa-trash-alt red" })
-      ])
+    return _c("a", { attrs: { href: "#" } }, [
+      _c("i", { staticClass: "fas fa-user-edit blue" })
     ])
   },
   function() {

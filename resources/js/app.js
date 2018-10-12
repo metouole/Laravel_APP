@@ -27,6 +27,9 @@ window.toast = toast;
 window.Form = Form;
 
 
+window.Fire = new Vue();
+
+
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 

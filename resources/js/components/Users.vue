@@ -33,7 +33,7 @@
                             <i class="fas fa-user-edit blue"></i>
                         </a>
                             
-                         <a href="#">
+                         <a href="#" @click="deleteUser(user.id)">
                             <i class="fas fa-trash-alt red"></i>
                         </a>
                     </td>
@@ -134,24 +134,69 @@
 
         methods: {
 
+          deleteUser(id) {
+
+              swal({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+
+                  if (result.value) {
+                    //Send request to the server
+                    this.form.delete('api/user/'+id).then(function(){
+                          swal(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                          )
+                          Fire.$emit('AfterCreate');
+                    }).catch(function(){
+                      swal(
+                            'Failed!',
+                            'There was something wrong',
+                            'warning'
+                          )
+                    }); 
+                   
+                  }
+                })
+
+          },
+
             loadUsers(){
             axios.get('api/user').then(({data}) =>(this.users = data.data));
         },
             createUser() {
                 this.$Progress.start();
-                this.form.post('api/user');
+                this.form.post('api/user')
+                .then(function(){
+                  Fire.$emit('AfterCreate');
+
+
                 $('#addnew').modal('hide');
                 toast({
                   type: 'success',
                   title: 'User Created successfully'
                 });
                 this.$Progress.finish();
+                })
+                .catch(function(){
+                  this.$Progress.fail();
+                });
+                
             }
         },
 
         created() {
             this.loadUsers();
-            setInterval(this.loadUsers, 3000);
+            Fire.$on('AfterCreate',
+              this.loadUsers);
+            //setInterval(this.loadUsers, 3000);
         }
     }
 </script>
