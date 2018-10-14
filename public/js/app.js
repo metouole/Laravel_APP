@@ -30439,7 +30439,7 @@ var options = {
   failedColor: '#874b4b',
   thickness: '5px',
   transition: {
-    speed: '1s',
+    speed: '0.05s',
     opacity: '0.6s',
     termination: 300
   },
@@ -71673,6 +71673,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       editMode: false,
       users: {},
       form: new Form({
+        id: '',
         name: '',
         email: '',
         password: '',
@@ -71686,7 +71687,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     updateUser: function updateUser() {
-      console.log('Edit page here');
+      this.$Progress.start();
+      //console.log('Edit page here');
+      this.form.put('api/user/' + this.form.id).then(function () {
+        $('#addnew').modal('hide');
+        Fire.$emit('AfterCreate');
+        //successs
+        swal('Updated!', 'Information has been updated.', 'success');
+        this.$Progress.finish();
+      }).catch(function () {
+        this.$Progress.fail();
+      });
     },
     editModal: function editModal(user) {
       this.editMode = true;

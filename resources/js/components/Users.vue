@@ -125,6 +125,7 @@
                 editMode: false,
                 users: {},
                 form: new Form({
+                    id: '',
                     name: '',
                     email: '',
                     password: '',
@@ -138,7 +139,24 @@
         methods: {
 
           updateUser(){
-            console.log('Edit page here');
+            this.$Progress.start();
+            //console.log('Edit page here');
+            this.form.put('api/user/'+this.form.id)
+            .then(function() {
+              $('#addnew').modal('hide');
+              Fire.$emit('AfterCreate');
+              //successs
+              swal(
+                'Updated!',
+                'Information has been updated.',
+                'success'
+                )
+              this.$Progress.finish();
+
+            })
+            .catch( function(){
+              this.$Progress.fail();
+            });
           },
 
           editModal(user){

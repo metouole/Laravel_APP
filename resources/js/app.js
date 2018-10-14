@@ -43,7 +43,7 @@ const options = {
   failedColor: '#874b4b',
   thickness: '5px',
   transition: {
-    speed: '1s',
+    speed: '0.05s',
     opacity: '0.6s',
     termination: 300
   },
