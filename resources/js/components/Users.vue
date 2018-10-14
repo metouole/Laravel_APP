@@ -8,7 +8,7 @@
                 <h3 class="card-title">Users Managements</h3>
 
                 <div class="card-tools">
-                 <button class="btn btn-primary" data-toggle="modal" data-target="#addnew">Add New <i class="fas fa-user-plus"></i></button>
+                 <button class="btn btn-primary" @click="newModal()">Add New <i class="fas fa-user-plus"></i></button>
                 </div>
               </div>
               <!-- /.card-header -->
@@ -29,7 +29,7 @@
                     <td>{{ user.type | upText }}</td>
                     <td>{{ user.created_at | myDate }}</td>
                     <td>
-                        <a href="#">
+                        <a href="#" @click="editModal(user)">
                             <i class="fas fa-user-edit blue"></i>
                         </a>
                             
@@ -75,8 +75,8 @@
                 
 
                 <div class="form-group">
-                  <input v-model="form.bio" type="bio" name="bio" placeholder="write your bio here" id="bio" 
-                    class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }">
+                  <textarea v-model="form.bio" type="bio" name="bio" placeholder="write your bio here" id="bio" 
+                    class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"> </textarea>
                   <has-error :form="form" field="bio"></has-error>
                 </div>
 
@@ -133,6 +133,17 @@
         },
 
         methods: {
+
+          editModal(user){
+            this.form.reset();
+            $('#addnew').modal('show');
+            this.form.fill(user);
+          },
+
+          newModal(){
+            this.form.reset();
+            $('#addnew').modal('show');
+          },
 
           deleteUser(id) {
 
