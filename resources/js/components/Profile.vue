@@ -77,52 +77,44 @@
                   <div class="tab-pane active show" id="settings">
                     <form class="form-horizontal">
                       <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Name</label>
+                        <label for="name"  class="col-sm-2 control-label">Name</label>
 
                         <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputName" placeholder="Name">
+                          <input type="email" v-model="form.name" class="form-control" id="name" placeholder="Name">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                        <label for="email" class="col-sm-2 control-label">Email</label>
 
                         <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                          <input type="email" v-model="form.email" class="form-control" id="email" placeholder="Email">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputName2" class="col-sm-2 control-label">Name</label>
+                        <label for="password"  class="col-sm-2 control-label">password</label>
 
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputName2" placeholder="Name">
+                          <input type="text" class="form-control" id="password" placeholder="password">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
+                        <label for="bio" class="col-sm-2 control-label">biographie</label>
 
                         <div class="col-sm-10">
-                          <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+                          <textarea class="form-control" v-model="form.bio" id="bio" placeholder="Biography"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
+                        <label for="type" class="col-sm-2 control-label">Types</label>
 
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+                          <input type="text" v-model="form.type" class="form-control" id="type" placeholder="Types">
                         </div>
                       </div>
+                      
                       <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <button type="submit" class="btn btn-danger">Submit</button>
+                          <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                       </div>
                     </form>
@@ -142,8 +134,26 @@
 
 <script>
     export default {
+        data() {
+          return {
+            form: new Form({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    type: '',
+                    bio: '',
+                    photo: ''
+                })
+          }
+        }, 
+
         mounted() {
             console.log('Component mounted.')
+        },
+
+        created() {
+           axios.get('api/profile').then(({data}) =>(this.form.fill(data)));
         }
     }
 </script>

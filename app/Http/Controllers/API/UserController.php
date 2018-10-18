@@ -55,7 +55,13 @@ class UserController extends Controller
         ]);
     }
 
-    /**
+
+    public function profile()
+    {
+        return auth('api')->user();
+    }
+
+     /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -65,6 +71,7 @@ class UserController extends Controller
     {
         //
     }
+
 
     /**
      * Update the specified resource in storage.
