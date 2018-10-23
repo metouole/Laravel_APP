@@ -20,7 +20,7 @@
                     <h5 class="widget-user-desc">Iverson Daughter</h5>
                   </div>
                   <div class="widget-user-image">
-                    <img class="img-circle" src="" alt="User Avatar">
+                    <img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
                   </div>
                   <div class="card-footer">
                     <div class="row">
@@ -80,41 +80,49 @@
                         <label for="name"  class="col-sm-2 control-label">Name</label>
 
                         <div class="col-sm-10">
-                          <input type="email" v-model="form.name" class="form-control" id="name" placeholder="Name">
+                          <input type="email" v-model="form.name" class="form-control" id="name" placeholder="Name" :class="{ 'is-invalid': form.errors.has('name') }">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="email" class="col-sm-2 control-label">Email</label>
 
                         <div class="col-sm-10">
-                          <input type="email" v-model="form.email" class="form-control" id="email" placeholder="Email">
+                          <input type="email" v-model="form.email" class="form-control" id="email" placeholder="Email" :class="{ 'is-invalid': form.errors.has('email') }">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="password"  class="col-sm-2 control-label">password</label>
 
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="password" placeholder="password">
+                          <input type="text" v-model="form.password" class="form-control" id="password" placeholder="password">
                         </div>
                       </div>
+                      <div class="form-group">
+                          <label for="photo" class="col-sm-2 control-label">Profile Photo</label>
+                          <div class="col-sm-12">
+                              <input type="file" @change="updateProfile" name="photo" class="form-input">
+                          </div>
+
+                      </div>
+
                       <div class="form-group">
                         <label for="bio" class="col-sm-2 control-label">biographie</label>
 
                         <div class="col-sm-10">
-                          <textarea class="form-control" v-model="form.bio" id="bio" placeholder="Biography"></textarea>
+                          <textarea class="form-control" v-model="form.bio" id="bio" placeholder="Biography" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="type" class="col-sm-2 control-label">Types</label>
 
                         <div class="col-sm-10">
-                          <input type="text" v-model="form.type" class="form-control" id="type" placeholder="Types">
+                          <input type="text" v-model="form.type" class="form-control" id="type" placeholder="Types" :class="{ 'is-invalid': form.errors.has('type') }">
                         </div>
                       </div>
                       
                       <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                          <button type="submit" class="btn btn-primary">Update</button>
+                          <button @click.prevent="updateInfo" type="submit" class="btn btn-primary">Update</button>
                         </div>
                       </div>
                     </form>
@@ -150,6 +158,49 @@
 
         mounted() {
             console.log('Component mounted.')
+        },
+
+        methods: {
+
+          getProfilePhoto(){
+            let photo = (this.form.photo.length > 100) ? this.form.photo : "img/profile/"+ this.form.photo;
+            return photo;
+          },
+
+          updateInfo(){
+            this.$Progress.start();
+            this.form.put('api/profile')
+            .then(()=>{
+              this.$Progress.finish();
+
+            })
+            .catch(()=>{
+              this.$Progress.fail();
+            });
+          },
+
+          updateProfile(e) {
+            //console.log('uploading');
+            let file = e.target.files[0];
+            //console.log(file);
+            let reader = new FileReader();
+
+            if(file['size'] < 2111775) {
+                reader.onloadend = (file) => {
+                //console.log('RESULT', reader.result)
+                this.form.photo = reader.result;
+              }
+              reader.readAsDataURL(file);
+            } else {
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'You are uploading a large file',
+              })
+            }
+            
+          }
+
         },
 
         created() {
