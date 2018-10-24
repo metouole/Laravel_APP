@@ -2,7 +2,7 @@
     <div class="container">
 
         <div class="row mt-5">
-          <div class="col-md-12">
+          <div class="col-md-12" v-if="$gate.isAdmin()">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Users Managements</h3>
@@ -207,7 +207,10 @@
           },
 
             loadUsers(){
-            axios.get('api/user').then(({data}) =>(this.users = data.data));
+              if(this.$gate.isAdmin){
+                axios.get('api/user').then(({data}) =>(this.users = data.data));
+              }
+            
         },
             createUser() {
                 this.$Progress.start();

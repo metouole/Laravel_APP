@@ -11,6 +11,9 @@ window.Vue = require('vue');
 import { Form, HasError, AlertError } from 'vform';
 import moment from 'moment';
 
+import Gates from "./Gates";
+Vue.prototype.$gate = new Gates(window.user);
+
 
 import swal from 'sweetalert2';
 window.swal = swal;
